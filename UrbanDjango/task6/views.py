@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Buyer, Game
 from .forms import UserRegisterForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def home_view(request):
@@ -118,3 +119,45 @@ def clear_database(request):
     Buyer.objects.all().delete()
     Game.objects.all().delete()
     return render(request, 'task6/database_cleared.html')
+
+
+from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import Buyer, Game
+
+def view_objects_with_pagination(request):
+    # Получаем количество элементов на странице из параметра запроса
+    items_per_page = request.GET.get('items_per_page', '5')
+    items_per_page = int(items_per_page) if items_per_page.isdigit() else 5
+
+    # Получаем все объекты модели
+    all_buyers = Buyer.objects.all()
+    all_games = Game.objects.all()
+
+    # Создаем объект Paginator для покупателей
+    paginator_buyers = Paginator(all_buyers, items_per_page)
+    page_buyers = request.GET.get('page_buyers')
+    try:
+        buyers = paginator_buyers.page(page_buyers)
+    except PageNotAnInteger:
+        buyers = paginator_buyers.page(1)
+    except EmptyPage:
+        buyers = paginator_buyers.page(paginator_buyers.num_pages)
+
+    # Создаем объект Paginator для игр
+    paginator_games = Paginator(all_games, items_per_page)
+    page_games = request.GET.get('page_games')
+    try:
+        games = paginator_games.page(page_games)
+    except PageNotAnInteger:
+        games = paginator_games.page(1)
+    except EmptyPage:
+        games = paginator_games.page(paginator_games.num_pages)
+
+    context = {
+        'buyers': buyers,
+        'games': games,
+        'items_per_page': items_per_page,
+    }
+
+    return render(request, 'task6/view_objects_with_pagination.html', context)
