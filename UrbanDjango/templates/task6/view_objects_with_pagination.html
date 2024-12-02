@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Пагинация объектов</title>
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+            padding: 0;
+        }
+        .pagination li {
+            margin: 0 5px;
+        }
+        .pagination a {
+            text-decoration: none;
+            padding: 5px 10px;
+            background-color: #f1f1f1;
+            color: #333;
+            border-radius: 5px;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+        .pagination .current {
+            padding: 5px 10px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Покупатели</h1>
+    <ul>
+        {% for buyer in buyers %}
+            <li>{{ buyer.name }} - {{ buyer.balance }} - {{ buyer.age }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Игры</h1>
+    <ul>
+        {% for game in games %}
+            <li>{{ game.title }} - {{ game.cost }} - {{ game.size }} - {{ game.description }} - {{ game.age_limited }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Пагинация покупателей</h2>
+    <ul class="pagination">
+        {% if buyers.has_previous %}
+            <li><a href="?page_buyers=1&items_per_page={{ items_per_page }}">Первая</a></li>
+            <li><a href="?page_buyers={{ buyers.previous_page_number }}&items_per_page={{ items_per_page }}">Предыдущая</a></li>
+        {% endif %}
+
+        {% for num in buyers.paginator.page_range %}
+            {% if buyers.number == num %}
+                <li class="current">{{ num }}</li>
+            {% else %}
+                <li><a href="?page_buyers={{ num }}&items_per_page={{ items_per_page }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if buyers.has_next %}
+            <li><a href="?page_buyers={{ buyers.next_page_number }}&items_per_page={{ items_per_page }}">Следующая</a></li>
+            <li><a href="?page_buyers={{ buyers.paginator.num_pages }}&items_per_page={{ items_per_page }}">Последняя</a></li>
+        {% endif %}
+    </ul>
+
+    <h2>Пагинация игр</h2>
+    <ul class="pagination">
+        {% if games.has_previous %}
+            <li><a href="?page_games=1&items_per_page={{ items_per_page }}">Первая</a></li>
+            <li><a href="?page_games={{ games.previous_page_number }}&items_per_page={{ items_per_page }}">Предыдущая</a></li>
+        {% endif %}
+
+        {% for num in games.paginator.page_range %}
+            {% if games.number == num %}
+                <li class="current">{{ num }}</li>
+            {% else %}
+                <li><a href="?page_games={{ num }}&items_per_page={{ items_per_page }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if games.has_next %}
+            <li><a href="?page_games={{ games.next_page_number }}&items_per_page={{ items_per_page }}">Следующая</a></li>
+            <li><a href="?page_games={{ games.paginator.num_pages }}&items_per_page={{ items_per_page }}">Последняя</a></li>
+        {% endif %}
+    </ul>
+
+    <h2>Количество элементов на странице</h2>
+    <form method="get">
+        <select name="items_per_page" onchange="this.form.submit()">
+            <option value="5" {% if items_per_page == 5 %}selected{% endif %}>5</option>
+            <option value="10" {% if items_per_page == 10 %}selected{% endif %}>10</option>
+            <option value="20" {% if items_per_page == 20 %}selected{% endif %}>20</option>
+        </select>
+    </form>
+</body>
+</html>
