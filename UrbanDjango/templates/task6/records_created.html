@@ -1,10 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Записи созданы</title>
+    <title>Объекты созданы</title>
 </head>
+
 <body>
-    <h1>Записи успешно созданы и связаны</h1>
+    <h1>Объекты успешно созданы и связаны</h1>
+    <p>Изменение элемента в базе данных: Заголовок игры 1 изменен на "New Title for Game 1"</p>
+    <p>Получение всех объектов и удаление одного из них: Покупатель с именем "Alice Johnson" удален</p>
+    <p>Фильтрация объектов в базе данных:</p>
+    <ul>
+        <li>Покупатели младше 18 лет:
+            <ul>
+                {% for buyer in young_buyers %}
+                <li>{{ buyer.name }}</li>
+                {% empty %}
+                <li>Нет покупателей младше 18 лет</li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li>Игры с ограничением возраста:
+            <ul>
+                {% for game in age_limited_games %}
+                <li>{{ game.title }}</li>
+                {% empty %}
+                <li>Нет игр с ограничением возраста</li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
 </body>
+
 </html>
